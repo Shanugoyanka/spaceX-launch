@@ -11,16 +11,12 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      year: "",
-      launch: "",
-      land: "",
+      year: this.props.launch_year,
+      launch: this.props.launch_success,
+      land: this.props.land_success,
       list: this.props.list,
       count: 100,
     };
-  }
-
-  componentDidUpdate() {
-    this.updateLocalstorage();
   }
 
   filter = async (
@@ -36,43 +32,58 @@ class App extends React.Component {
     this.setState({ list: res });
   };
 
+  changeUrl = () => {
+    let url = "/";
+    if (this.state.year != "") {
+      url = url === "/" ? `/?launch_year=${this.state.year}` : url + `&launch_year=${this.state.year}`;
+    }
+    if (this.state.launch != "") {
+      url = url === "/" ? `/?launch_success=${this.state.launch}` : url + `&launch_success=${this.state.launch}`;
+    }
+    if (this.state.land != "") {
+      url = url === "/" ? `/?land_success=${this.state.land}` : url + `&land_success=${this.state.land}`;
+    }
+    window.history.replaceState({ id: "100" }, "launches", url);
+  };
+
   changeYear = (year) => {
     this.setState({ list: null });
     year = year === this.state.year ? "" : year;
-    this.setState({ year });
+    this.setState(
+      { year },
+      () => {
+        this.changeUrl();
+      }
+    );
     this.filter(year, this.state.launch, this.state.land);
+    this.changeUrl();
   };
 
   changeLaunchFilter = (launch) => {
     this.setState({ list: null });
     launch = launch === this.state.launch ? "" : launch;
-    this.setState({ launch });
+    this.setState(
+      { launch },
+      () => {
+        this.changeUrl();
+      }
+    );
     this.filter(this.state.year, launch, this.state.land);
+    this.changeUrl();
   };
 
   changeLandingFilter = (land) => {
     this.setState({ list: null });
     land = land === this.state.land ? "" : land;
-    this.setState({ land });
-    this.filter(this.state.year, this.state.launch, land);
-  };
-
-  updateLocalstorage = () => {
-    const { year, launch, land } = this.state;
-    if (window) {
-      let temp = JSON.stringify({ year, launch, land });
-      window.localStorage.setItem("configuration", temp);
-    }
-  };
-
-  componentDidMount() {
-    if (window) {
-      if (window.localStorage.configuration) {
-        let temp = JSON.parse(window.localStorage.configuration);
-        this.setState({ ...temp }, this.filter);
+    this.setState(
+      { land },
+      () => {
+        this.changeUrl();
       }
-    }
-  }
+    );
+    this.filter(this.state.year, this.state.launch, land);
+    this.changeUrl();
+  };
 
   render() {
     return (

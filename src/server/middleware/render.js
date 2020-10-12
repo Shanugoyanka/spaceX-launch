@@ -6,16 +6,20 @@ import App from '../../App';
 import fetch from 'isomorphic-fetch';
 
 
-async function getData(){
-  let list = await fetch(`https://api.spaceXdata.com/v3/launches?limit=10`)
+async function getData(launch_success, land_success, launch_year){
+  let list = await fetch(`https://api.spaceXdata.com/v3/launches?limit=100&launch_success=${launch_success}&land_success=${land_success}&launch_year=${launch_year}`)
   list = await list.json();
   return list;
 }
 
 const renderMiddleware = () => async (req, res) => {
-  let list = await getData();
+  let {launch_success, land_success, launch_year} = req.query
+  launch_success = launch_success || ""
+  land_success = land_success || ""
+  launch_year = launch_year || ""
+  let list = await getData(launch_success, land_success, launch_year);
   let html = req.html;
-  const htmlContent = ReactDOMServer.renderToString(<App list={list} />);
+  const htmlContent = ReactDOMServer.renderToString(<App list={list} land_success={land_success} launch_success={launch_success} launch_year={launch_year}/>);
   const htmlReplacements = {
     HTML_CONTENT: htmlContent,
   };
