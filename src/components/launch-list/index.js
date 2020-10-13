@@ -10,21 +10,19 @@ export default class LaunchList extends React.Component {
 
   render = () => {
     return (
-      <>
-        <div className="list">
-          {this.props.list ? (
-            this.props.list.length ? (
-              this.props.list.map((launch, i) => (
-                <Card launch={launch} key={`card${i}`} />
-              ))
-            ) : (
-              <Result type="notfound" />
-            )
+      <div className="list">
+        {this.props.list ? (
+          this.props.list.length ? (
+            this.props.list.map((launch, i) => (
+              <Card launch={launch} key={`card${i}`} />
+            ))
           ) : (
-            <Result type="loading" />
-          )}
-        </div>
-      </>
+            <Result type="notfound" />
+          )
+        ) : (
+          <Result type="loading" />
+        )}
+      </div>
     );
   };
 }

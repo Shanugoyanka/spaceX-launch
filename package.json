@@ -15,8 +15,18 @@
     "react-ssr-scripts": "2.2.3",
     "react-test-renderer": "^16.13.1"
   },
+  "devDependencies": {
+    "brotli-webpack-plugin": "^1.1.0",
+    "compression-webpack-plugin": "^6.0.3",
+    "cross-env": "^5.1.1",
+    "webpack-bundle-analyzer": "^3.9.0",
+    "webpack-cli": "^4.0.0",
+    "sw-precache-webpack-plugin": "^1.0.0"
+  },
   "scripts": {
-    "build": "react-ssr-scripts build",
+    "start:ssr": "node ./server/",
+    "build": "react-ssr-scripts build && npm run ssr",
+    "ssr": "cross-env NODE_ENV=production webpack --config ./webpack.ssr.config.js",
     "start": "react-ssr-scripts start",
     "test": "react-ssr-scripts test",
     "eject": "react-ssr-scripts eject"
